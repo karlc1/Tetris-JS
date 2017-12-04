@@ -211,6 +211,8 @@ function checkForCompleteRows(){
 function moveLeft(){
     possibleMove = true;
 
+    console.log("Move Left , center X" + currentBlock.centerX);
+
     if (gameState[currentBlock.centerY][currentBlock.centerX-1] != 0){
       possibleMove = false;
     }
@@ -315,6 +317,13 @@ function drop(){
         }
 
         if (posY < 19 && gameState[posY+1][posX] != 0){
+          blockFinished = true;
+        }
+
+
+        console.log("DROP CENTER X: " + currentBlock.centerX);
+
+        if (currentBlock.centerY > 0 && currentBlock.centerY < 19 && gameState[currentBlock.centerY+1][currentBlock.centerX] != 0){
           blockFinished = true;
         }
       }
