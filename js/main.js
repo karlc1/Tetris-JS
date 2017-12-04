@@ -52,9 +52,60 @@ var currentPosY = 0;
 
 var currentBlock = null;
 var nextBlock = null;
-var intervalID = window.setInterval(drop, 200);
+var intervalID = null;
+var gameState = null;
 
-var gameState = initGameState(20, 10);
+
+function startGame() {
+  intervalID = window.setInterval(drop, 200);
+  gameState = initGameState(20, 10);
+  playing = true;
+  startAnimating(20);
+}
+
+function stopGame() {
+  console.log("STOP GAME");
+  clearInterval(intervalID);
+  playing = false;
+}
+
+function gameFinished() {
+
+  for (i = 0; i < 3; i++){
+    currY = currentBlock.centerY + currentBlock.yRotation[currentBlock.currentRotation][i];
+    console.log("CURR Y: " + currY);
+
+    if (currY <= 0){
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function getAllBoxesForBlock(){
+
+  var all = new Array(4);
+
+
+
+  for (rotation = 0; i < 4; i++){
+
+    all[rotation] = new Array(4);
+
+    for (i = 0; i < 4; i++){
+
+
+      currX = currentBlock.centerX + currentBlock.xRotation[rotation][i];
+      currY = currentBlock.centerY + currentBlock.yRotation[rotation][i];
+
+      all[rotation][i] = [currX, currY];
+
+    }
+  }
+
+}
+
 
 // initialize the timer variables and start the animation
 
@@ -83,54 +134,39 @@ function animate() {
   now = Date.now();
   elapsed = now - then;
 
-
   handleActions();
-
-
   // if enough time has elapsed, draw the next frame
-
-
-
   // horizontal animations here, vertical below if statmement
-
-
   if (elapsed > fpsInterval) {
 
     // Get ready for next frame by setting then=now, but also adjust for your
     // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
     then = now - (elapsed % fpsInterval);
 
-    context.fillStyle="#ADD8E6";
-    context.fillRect(0,0,full_width, full_height);
-    context.strokeRect(0,0,full_width, full_height);
 
-    block_context.fillStyle="#ADD8E6";
-    block_context.fillRect(0,0,block_canvas_width, block_canvas_height);
-    block_context.strokeRect(0,0,block_canvas_width, block_canvas_height);
+    if (playing){
 
-    drawNextBlock(nextBlock);
+      context.fillStyle="#ADD8E6";
+      context.fillRect(0,0,full_width, full_height);
+      context.strokeRect(0,0,full_width, full_height);
 
+      block_context.fillStyle="#ADD8E6";
+      block_context.fillRect(0,0,block_canvas_width, block_canvas_height);
+      block_context.strokeRect(0,0,block_canvas_width, block_canvas_height);
 
-
-
-    drawFinishedBlocks();
-    drawBlock(currentBlock);
-
+      drawNextBlock(nextBlock);
+      drawFinishedBlocks();
+      drawBlock(currentBlock);
 
 
 
+    }else{
 
-    /*
-    if (filled){
-    context.fillStyle="#FF0000";
-    context.fillRect(20,20,150,100);
-  }else{
-  context.fillStyle="#00FF00";
-  context.fillRect(20,20,150,100);
-}
-*/
+      context.fillStyle="#FF8B8B";
+      context.fillRect(0,0,full_width, full_height);
+      context.strokeRect(0,0,full_width, full_height);
 
-
+    }
   }
 }
 
@@ -157,6 +193,10 @@ function handleActions(){
 
 function spawnBlock(){
   checkForCompleteRows();
+
+  if (currentBlock != null && gameFinished()){
+    stopGame();
+  }
 
 
   if (currentBlock == null){
@@ -194,7 +234,6 @@ function checkForCompleteRows(){
       }
       if (rowComplete){
         finishedRows.push(i);
-        console.log("ROW FINISHED: " + i);
       }
   }
 
@@ -211,7 +250,6 @@ function checkForCompleteRows(){
 function moveLeft(){
     possibleMove = true;
 
-    console.log("Move Left , center X" + currentBlock.centerX);
 
     if (gameState[currentBlock.centerY][currentBlock.centerX-1] != 0){
       possibleMove = false;
@@ -238,6 +276,7 @@ function moveLeft(){
 
 
 //TODO: center-boxen saknar kollision när den flyttas till höger
+// Förmodligen fixat, validera
 function moveRight(){
   possibleMove = true;
 
@@ -321,7 +360,6 @@ function drop(){
         }
 
 
-        console.log("DROP CENTER X: " + currentBlock.centerX);
 
         if (currentBlock.centerY > 0 && currentBlock.centerY < 19 && gameState[currentBlock.centerY+1][currentBlock.centerX] != 0){
           blockFinished = true;
@@ -440,12 +478,6 @@ function drawNextBlock(nextBlock){
 
     drawNextBox(centerX + offset_x, centerY + offset_y, getColor(nextBlock.colorCode));
   }
-
-
-
-
-
-
 }
 
 
@@ -673,4 +705,4 @@ function getBlock(number){
 
 var t = new T_BLOCK();
 
-startAnimating(20);
+startGame();
