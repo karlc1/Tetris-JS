@@ -58,7 +58,7 @@ var gameState = null;
 
 function startGame() {
   intervalID = window.setInterval(drop, 200);
-  gameState = initGameState(20, 10);
+  gameState = initGameState(25, 10);
   playing = true;
   startAnimating(20);
 }
@@ -404,15 +404,6 @@ function isColliding(){
 }
 
 function drawBox(x, y, color){
-
-//   context.rect(x*box_size, y*box_size ,box_size, box_size);
-// context.fillStyle = color;
-// context.shadowColor = 'black';
-// context.shadowBlur = 25;
-// context.shadowOffsetX = 10;
-// context.shadowOffsetY = 10;
-// context.fill();
-
   context.fillStyle= color;
   context.shadowColor = 'white';
   context.shadowBlur = 1;
@@ -426,14 +417,6 @@ function drawBox(x, y, color){
 
 
 function drawNextBox(x, y, color){
-
-//   context.rect(x*box_size, y*box_size ,box_size, box_size);
-// context.fillStyle = color;
-// context.shadowColor = 'black';
-// context.shadowBlur = 25;
-// context.shadowOffsetX = 10;
-// context.shadowOffsetY = 10;
-// context.fill();
 
   block_context.fillStyle= color;
   block_context.shadowColor = 'white';
@@ -651,12 +634,6 @@ function initGameState(rows, cols) {
   return array;
 }
 
-function initGraphics(rows, cols) {
-  var array = [], row = [];
-  while (cols--) row.push('');
-  while (rows--) array.push(row.slice());
-  return array;
-}
 
 function getColor(colorCode){
   switch(colorCode){
